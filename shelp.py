@@ -2,6 +2,8 @@
 import argparse
 import netifaces
 
+__version__ = "0.1.1"
+
 # TODO have default values for arguments [read from a .conf file]
 # TODO import reverseshell format strings from a shell.json file
 
@@ -15,6 +17,7 @@ parser.add_argument("-l", "--language", help="Specify the language you want your
 
 args = parser.parse_args()
 
+# TODO add option to query public ip addr from router
 
 def get_ip_from_interface(interface):
     """ return your external IP on given interface """
