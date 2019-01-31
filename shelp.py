@@ -1,22 +1,25 @@
 #!/usr/bin/env python3
 import argparse
+import netifaces
 
 # TODO have default values for arguments [read from a .conf file]
-# TODO import reverseshell format strings from a shell.json file 
+# TODO import reverseshell format strings from a shell.json file
+
+# Argument parsing
 parser = argparse.ArgumentParser()
 args_ip_group = parser.add_mutually_exclusive_group()
 args_ip_group.add_argument("-i", "--interface", help="Specify the interface to get your IP")
-args_ip_group.add_argument("-a", "--ip", help="Specify your IP")
+args_ip_group.add_argument("-a", "--ip", help="Specify your IP", type=int)
 parser.add_argument("port", help="Specify your port")
 parser.add_argument("-l", "--language", help="Specify the language you want your shell in.", default="bash")
+
 args = parser.parse_args()
 
-print(args)
 
 def get_ip_from_interface(interface):
     """ return your external IP on given interface """
-    # TODO implement this
-    return "127.0.0.1"
+    ip = netifaces.ifaddresses(interface)[netifaces.AF_INET][0]['addr']
+    return ip
 
 def generate_shell(ip, port, lang):
     """generates the reverse shell code"""
