@@ -2,6 +2,8 @@
 import argparse
 import netifaces
 import json
+import sys
+import os
 
 __version__ = "0.2.1"
 
@@ -16,12 +18,18 @@ args_ip_group.add_argument("-i", "--interface", help="Specify the interface to g
 args_ip_group.add_argument("-a", "--ip", help="Specify your IP")
 parser.add_argument("-p", "--port", help="Specify your port", type=int)
 parser.add_argument("-l", "--language", help="Specify the language you want your shell in.", default="bash")
+parser.add_argument("--shells_path", help="Path to alternative json file with shell_codes")
 
 args = parser.parse_args()
 
+if args.shells_path:
+    shells_path = args.shells_path
+else:
+    shells_path = os.path.join(sys.path[0], 'shells.json')
+
 # TODO add option to query public ip addr from router
 
-data = {'ip': '127.0.0.1', 'port': '9999'}
+data = {'ip': '127.0.0.1', 'port': '9999'}  # DEFAULT data for now TODO
 
 
 def get_ip_from_interface(interface):
@@ -39,7 +47,7 @@ def get_ip_from_interface(interface):
 def generate_shell(data, lang):
     """generates the reverse shell code"""
     shell_code = ""
-    with open("shells.json", "r") as shells_file:
+    with open(shells_path, "r") as shells_file:
         shells = json.load(shells_file)
         for element in shells:
             if lang in element["lang"]:
