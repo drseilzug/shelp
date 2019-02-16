@@ -5,11 +5,9 @@ import json
 import sys
 import os
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 
 # TODO have default values for arguments [read from a .conf file]
-# TODO add more shells to json
-# TODO have -h list possible shell languages
 
 # get options from default shell.json for argparser help
 # TODO make error handling for file not found
@@ -33,6 +31,8 @@ parser.add_argument("-l", "--language", metavar="LANG",
                     default="bash", choices=shell_choices)
 parser.add_argument("--shells_path",
                     help="Path to alternative json file with shell_codes")
+parser.add_argument("--nonewline", "-n", help="dont add newline to output",
+                    action="store_true")
 
 args = parser.parse_args()
 
@@ -80,7 +80,10 @@ def main():
     if args.port:
         data['port'] = args.port
     shell = generate_shell(data, args.language)
-    print(shell)  # TODO is print the best option? encoding?
+    if args.nonewline:
+        print(shell, end='')  # TODO is print the best option? encoding?
+    else:
+        print(shell)
 
 
 if __name__ == '__main__':
