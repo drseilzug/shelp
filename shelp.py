@@ -5,20 +5,34 @@ import json
 import sys
 import os
 
-__version__ = "0.2.1"
+__version__ = "0.3.0"
 
 # TODO have default values for arguments [read from a .conf file]
 # TODO add more shells to json
 # TODO have -h list possible shell languages
 
+# get options from default shell.json for argparser help
+# TODO make error handling for file not found
+with open(os.path.join(sys.path[0], 'shells.json'), "r") as shells_file:
+    shells = json.load(shells_file)
+    shell_choices = []
+    for element in shells:
+        shell_choices += element["lang"]
+print("DEBUG: ", shell_choices)  # DEBUG!!!
+
 # Argument parsing
 parser = argparse.ArgumentParser()
 args_ip_group = parser.add_mutually_exclusive_group()
-args_ip_group.add_argument("-i", "--interface", help="Specify the interface to get your IP")
+args_ip_group.add_argument("-i", "--interface", metavar="INTER",
+                           help="Specify the interface to get your IP")
 args_ip_group.add_argument("-a", "--ip", help="Specify your IP")
 parser.add_argument("-p", "--port", help="Specify your port", type=int)
-parser.add_argument("-l", "--language", help="Specify the language you want your shell in.", default="bash")
-parser.add_argument("--shells_path", help="Path to alternative json file with shell_codes")
+parser.add_argument("-l", "--language", metavar="LANG",
+                    help="""Specify the language you want your shell in.
+                     Available languages: %(choices)s""",
+                    default="bash", choices=shell_choices)
+parser.add_argument("--shells_path",
+                    help="Path to alternative json file with shell_codes")
 
 args = parser.parse_args()
 
