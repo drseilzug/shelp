@@ -6,9 +6,7 @@ import sys
 import os
 import configparser
 
-__version__ = "0.3.4"
-
-# TODO have default values for arguments [read from a .conf file]
+__version__ = "0.4.0"
 
 try:
     with open(os.path.join(sys.path[0], 'shells.json'), "r") as shells_file:
