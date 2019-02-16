@@ -5,10 +5,18 @@ import json
 import sys
 import os
 
+<<<<<<< HEAD
 __version__ = "0.3.4"
 
 # TODO have default values for arguments [read from a .conf file]
 
+=======
+__version__ = "0.3.3"
+
+# TODO have default values for arguments [read from a .conf file]
+
+# TODO make error handling for file not found
+>>>>>>> 6c61a1d45bf1c2fd7af661fe72946ded9a893c88
 try:
     with open(os.path.join(sys.path[0], 'shells.json'), "r") as shells_file:
         shells = json.load(shells_file)
