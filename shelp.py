@@ -25,11 +25,11 @@ args_ip_group.add_argument("-a", "--ip", help="Specify your IP")
 parser.add_argument("-p", "--port", help="Specify your port", type=int)
 parser.add_argument("-l", "--language", metavar="LANG",
                     help="""Specify the language you want your shell in.
-                     Available languages: %(choices)s""",
+                     available languages: %(choices)s""",
                     default="bash", choices=shell_choices)
 parser.add_argument("--shells_path",
-                    help="Path to alternative json file with shell_codes")
-parser.add_argument("--nonewline", "-n", help="dont add newline to output",
+                    help="Path to alternative json file with shell_codes.")
+parser.add_argument("--nonewline", "-n", help="Don't add newline to output.",
                     action="store_true")
 
 args = parser.parse_args()
