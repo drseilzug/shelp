@@ -5,16 +5,20 @@ import json
 import sys
 import os
 
-__version__ = "0.3.2"
+__version__ = "0.3.3"
 
 # TODO have default values for arguments [read from a .conf file]
 
 # TODO make error handling for file not found
-with open(os.path.join(sys.path[0], 'shells.json'), "r") as shells_file:
-    shells = json.load(shells_file)
-    shell_choices = []
-    for element in shells:
-        shell_choices += element["lang"]
+try:
+    with open(os.path.join(sys.path[0], 'shells.json'), "r") as shells_file:
+        shells = json.load(shells_file)
+        shell_choices = []
+        for element in shells:
+            shell_choices += element["lang"]
+except IOError:
+    print("There was no json file for shells found")
+    sys.exit(1)
 
 # Argument parsing
 parser = argparse.ArgumentParser()
@@ -47,9 +51,9 @@ data = {'ip': '127.0.0.1', 'port': '9999'}  # DEFAULT data for now TODO
 def get_ip_from_interface(interface):
     """ return your external IP on given interface """
     inter = netifaces.ifaddresses(interface)
-    if netifaces.AF_INET in inter:
+    try:
         ip = inter[netifaces.AF_INET][0]['addr']
-    else:
+    except KeyError:
         # TODO make this an error
         print("no IPv4 adress for {} found. Deault to localhost.".format(interface))
         return "127.0.0.1"
