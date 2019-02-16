@@ -5,11 +5,10 @@ import json
 import sys
 import os
 
-__version__ = "0.3.1"
+__version__ = "0.3.2"
 
 # TODO have default values for arguments [read from a .conf file]
 
-# get options from default shell.json for argparser help
 # TODO make error handling for file not found
 with open(os.path.join(sys.path[0], 'shells.json'), "r") as shells_file:
     shells = json.load(shells_file)
@@ -72,16 +71,19 @@ def generate_shell(data, lang):
 
 def main():
     """Main function"""
+    # get IP
     if args.interface:
         data['ip'] = get_ip_from_interface(args.interface)
     elif args.ip:
         data['ip'] = args.ip
 
+    # get port
     if args.port:
         data['port'] = args.port
     shell = generate_shell(data, args.language)
     if args.nonewline:
-        print(shell, end='')  # TODO is print the best option? encoding?
+        sys.stdout.write(shell)
+        sys.stdout.flush()
     else:
         print(shell)
 
