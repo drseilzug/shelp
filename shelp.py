@@ -15,7 +15,6 @@ with open(os.path.join(sys.path[0], 'shells.json'), "r") as shells_file:
     shell_choices = []
     for element in shells:
         shell_choices += element["lang"]
-print("DEBUG: ", shell_choices)  # DEBUG!!!
 
 # Argument parsing
 parser = argparse.ArgumentParser()
