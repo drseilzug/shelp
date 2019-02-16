@@ -4,19 +4,12 @@ import netifaces
 import json
 import sys
 import os
+import configparser
 
-<<<<<<< HEAD
 __version__ = "0.3.4"
 
 # TODO have default values for arguments [read from a .conf file]
 
-=======
-__version__ = "0.3.3"
-
-# TODO have default values for arguments [read from a .conf file]
-
-# TODO make error handling for file not found
->>>>>>> 6c61a1d45bf1c2fd7af661fe72946ded9a893c88
 try:
     with open(os.path.join(sys.path[0], 'shells.json'), "r") as shells_file:
         shells = json.load(shells_file)
@@ -27,32 +20,57 @@ except IOError:
     print("There was no json file for shells found")
     sys.exit(1)
 
+# parsing config for default values or set them if not found
+default_conf = {}
+config_path = os.path.join(sys.path[0], 'config.ini')
+if os.path.isfile(config_path):
+    config = configparser.ConfigParser()
+    config.read(config_path)
+    default_conf['ip'] = config['DEFAULT'].get('ip')
+    default_conf['interface'] = config['DEFAULT'].get('interface')
+    default_conf['port'] = config['DEFAULT'].getint('port')
+    default_conf['language'] = config['DEFAULT'].get('language')
+    default_conf['nonewline'] = config['DEFAULT'].getboolean('nonewline')
+    default_conf['shells_path'] = config['DEFAULT'].get('shells_path')
+
+else:
+    default_conf['ip'] = '127.0.0.1'
+    default_conf['interface'] = None
+    default_conf['port'] = 9001
+    default_conf['language'] = 'bash'
+    default_conf['nonewline'] = False
+    default_conf['shells_path'] = None
+
 # Argument parsing
 parser = argparse.ArgumentParser()
 args_ip_group = parser.add_mutually_exclusive_group()
 args_ip_group.add_argument("-i", "--interface", metavar="INTER",
-                           help="Specify the interface to get your IP")
-args_ip_group.add_argument("-a", "--ip", help="Specify your IP")
-parser.add_argument("-p", "--port", help="Specify your port", type=int)
+                           help="Specify the interface to get your IP",
+                           default=default_conf['interface'])
+args_ip_group.add_argument("-a", "--ip", help="Specify your IP",
+                           default=default_conf['ip'])
+parser.add_argument("-p", "--port", help="Specify your port", type=int,
+                    default=default_conf['port'])
 parser.add_argument("-l", "--language", metavar="LANG",
                     help="""Specify the language you want your shell in.
                      available languages: %(choices)s""",
-                    default="bash", choices=shell_choices)
+                    default=default_conf['language'], choices=shell_choices)
 parser.add_argument("--shells_path",
-                    help="Path to alternative json file with shell_codes.")
+                    help="Path to alternative json file with shell_codes.",
+                    default=default_conf['shells_path'])
 parser.add_argument("--nonewline", "-n", help="Don't add newline to output.",
-                    action="store_true")
+                    action="store_true", default=default_conf['nonewline'])
 
 args = parser.parse_args()
 
-if args.shells_path:
+if args.shells_path:  # TODO error handling for invalid path --> go to default
     shells_path = args.shells_path
 else:
     shells_path = os.path.join(sys.path[0], 'shells.json')
 
 # TODO add option to query public ip addr from router
 
-data = {'ip': '127.0.0.1', 'port': '9999'}  # DEFAULT data for now TODO
+data = {'ip': '127.0.0.1', 'port': '9999'}  # DEFAULT data for now should never be used TODO
 
 
 def get_ip_from_interface(interface):
@@ -61,9 +79,12 @@ def get_ip_from_interface(interface):
     try:
         ip = inter[netifaces.AF_INET][0]['addr']
     except KeyError:
-        # TODO make this an error
-        print("no IPv4 adress for {} found. Deault to localhost.".format(interface))
-        return "127.0.0.1"
+        print("no IPv4 adress for {} found. Deault to IP setting.".format(interface, data['ip']))
+        if args.ip:
+            return args.ip
+        else:
+            print("No IP settings found. Default to locahost.")
+            return "127.0.0.1"
     return ip
 
 

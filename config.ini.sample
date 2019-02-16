@@ -1,0 +1,12 @@
+[DEFAULT]
+# if set an interface will take precedent over the ip
+# but if ip is set it will be used as a fallback
+
+#interface=lo
+ip=127.0.0.1
+port=9999
+language=bash
+nonewline=False
+# shells_path=some/path/to/a.json
+
+# args from command line will take precedence over any config settings
